@@ -4,13 +4,15 @@ server:
 spring:
    main:
       web-application-type: reactive
+
    application:
       name: API-GATEWAY
+
    cloud:
       gateway:
          routes:
             - id: USER-SERVICE
-              uri: lb://USER-SERVICE
+              uri: lb://USER-SERVICE #Server-Side Load Balancing
               predicates:
               - Path=/users/**
 
@@ -23,8 +25,29 @@ spring:
               uri: lb://RATING-SERVICE
               predicates:
               - Path=/ratings/**
+   
    config:
       import: optional:configserver:http://localhost:8083
+
+feign:
+   httpclient:
+      enabled: true
+   loadbalancer:
+      enabled: false # Disabled if false, enabled if true
+  
+#   security:
+#    oauth2:
+#     client:
+#      registration:
+#       okta:
+#        client-id: 0oanqdo8py3nH17gr5d7  # Store in environment variable
+#        client-secret: BjCpCAeBVJJb308lYvL-icOXqisuSvklT-4JdAwgzkxxQhb8pd1bT4SVruAtle8Z  # Store securely
+#        scope: openid, profile, email, offline_access
+#        authorization-grant-type: authorization_code
+#      provider:
+#       okta:
+#        issuer-uri: https://dev-03913341.okta.com/oauth2/default
+
 #eureka:
 #   instance:
 #      prefer-ip-address: true
